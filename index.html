@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R3 Book Management – ज्ञान का प्रबंधन, सरलता के साथ</title>
+    <style>
+        :root {
+            --primary: #0F172A;
+            --primary-light: #1E293B;
+            --secondary: #F8FAFC;
+            --accent: #D97706;
+            --accent-hover: #B45309;
+            --sage: #6B8E7B;
+            --sage-light: #8FBC8F;
+            --text-dark: #1E293B;
+            --text-light: #64748B;
+            --white: #FFFFFF;
+            --off-white: #F8FAFC;
+            --border: #E2E8F0;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --success: #22C55E;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-heading: 'Segoe UI', 'Poppins', 'Noto Sans Devanagari', sans-serif;
+            --font-body: 'Segoe UI', 'Inter', 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .dark-mode {
+            --primary: #0A0F1A;
+            --primary-light: #111827;
+            --secondary: #1A1F2E;
+            --text-dark: #E2E8F0;
+            --text-light: #94A3B8;
+            --white: #1E293B;
+            --off-white: #1A1F2E;
+            --border: #2D3548;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--off-white);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: var(--primary);
+            color: #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            transition: background var(--transition), transform 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), #F59E0B);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+            color: #0F172A;
+            flex-shrink: 0;
+            letter-spacing: -1px;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #0F172A;
+            bottom: 8px;
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-text .brand {
+            font-family: var(--font-heading);
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #FFFFFF;
+            line-height: 1.1;
+        }
+        .logo-text .tagline {
+            font-size: 0.7rem;
+            color: #94A3B8;
+            letter-spacing: 0.3px;
+            font-weight: 400;
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            border-radius: var(--radius-sm);
+            color: #CBD5E1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.93rem;
+            transition: all var(--transition);
+            cursor: pointer;
+            letter-spacing: 0.2px;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(255, 255, 255, 0.06);
+            color: #FFFFFF;
+        }
+        .sidebar-nav a.active {
+            background: rgba(217, 119, 6, 0.2);
+            color: #FBBF24;
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .dark-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #CBD5E1;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            user-select: none;
+            font-weight: 500;
+        }
+        .dark-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFF;
+        }
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #475569;
+            border-radius: 12px;
+            position: relative;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #FFF;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all var(--transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .dark-mode .toggle-switch {
+            background: var(--accent);
+        }
+        .dark-mode .toggle-switch::after {
+            left: 22px;
+            background: #0F172A;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 28px 32px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            width: calc(100% - 260px);
+            max-width: 1400px;
+        }
+
+        /* Header */
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            margin-bottom: 24px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            background: var(--white);
+            color: var(--text-dark);
+            transition: all var(--transition);
+            box-shadow: var(--shadow-sm);
+            letter-spacing: 0.2px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1), var(--shadow);
+        }
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: color var(--transition);
+        }
+        .search-input:focus~.search-icon {
+            color: var(--accent);
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all var(--transition);
+            border: 1px solid var(--border);
+            cursor: default;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.books {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+        .stat-icon.available {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .stat-icon.issued {
+            background: #FFF7ED;
+            color: #D97706;
+        }
+        .stat-icon.categories {
+            background: #FDF2F8;
+            color: #BE185D;
+        }
+        .dark-mode .stat-icon.books {
+            background: #1E1B4B;
+            color: #818CF8;
+        }
+        .dark-mode .stat-icon.available {
+            background: #064E3B;
+            color: #34D399;
+        }
+        .dark-mode .stat-icon.issued {
+            background: #451A03;
+            color: #FBBF24;
+        }
+        .dark-mode .stat-icon.categories {
+            background: #4C1D3D;
+            color: #F472B6;
+        }
+        .stat-info .stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1;
+        }
+        .stat-info .stat-label {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Section */
+        .section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 24px 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.2px;
+        }
+        .section-badge {
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .badge-available {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .badge-issued {
+            background: #FFF7ED;
+            color: #D97706;
+        }
+        .dark-mode .badge-available {
+            background: #064E3B;
+            color: #34D399;
+        }
+        .dark-mode .badge-issued {
+            background: #451A03;
+            color: #FBBF24;
+        }
+
+        /* Form */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            letter-spacing: 0.2px;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.93rem;
+            font-family: var(--font-body);
+            background: var(--off-white);
+            color: var(--text-dark);
+            transition: all var(--transition);
+            letter-spacing: 0.2px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.08);
+            background: var(--white);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-body);
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 18px rgba(217, 119, 6, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(217, 119, 6, 0.03);
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #FFF;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+        .btn-danger:hover {
+            background: var(--danger-hover);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+            transform: translateY(-1px);
+        }
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+        }
+        .btn-xs {
+            padding: 5px 10px;
+            font-size: 0.72rem;
+            border-radius: 16px;
+            letter-spacing: 0.2px;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 750px;
+        }
+        table thead {
+            background: var(--primary);
+            color: #E2E8F0;
+        }
+        table thead th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        table tbody tr {
+            transition: all var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+        table tbody tr:hover {
+            background: rgba(217, 119, 6, 0.03);
+        }
+        table tbody td {
+            padding: 13px 16px;
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+        .status-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+        .status-dot::before {
+            content: '';
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-dot.available::before {
+            background: var(--success);
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+        }
+        .status-dot.issued::before {
+            background: var(--accent);
+            box-shadow: 0 0 6px rgba(217, 119, 6, 0.5);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+        .empty-state .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+        .empty-state p {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            padding: 14px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #FFF;
+            box-shadow: var(--shadow-xl);
+            animation: slideInRight 0.4s ease, fadeOut 0.3s ease 2.5s forwards;
+            letter-spacing: 0.3px;
+            max-width: 450px;
+        }
+        .toast-success {
+            background: #059669;
+        }
+        .toast-error {
+            background: #DC2626;
+        }
+        .toast-info {
+            background: #4F46E5;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 28px 30px;
+            box-shadow: var(--shadow-xl);
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.25s ease;
+        }
+        .modal h3 {
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 20px 16px;
+            }
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 640px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px 12px;
+            }
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .page-title {
+                font-size: 1.4rem;
+            }
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: #FFF;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">R3</div>
+            <div class="logo-text">
+                <span class="brand">R3 Book</span>
+                <span class="tagline">ज्ञान का प्रबंधन, सरलता के साथ</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="active" onclick="showSection('dashboard')" title="डैशबोर्ड">
+                <span class="nav-icon">📊</span> डैशबोर्ड
+            </a>
+            <a onclick="showSection('add-book')" title="नई किताब जोड़ें">
+                <span class="nav-icon">➕</span> किताब जोड़ें
+            </a>
+            <a onclick="showSection('inventory')" title="सभी किताबें">
+                <span class="nav-icon">📚</span> इन्वेंटरी
+            </a>
+            <a onclick="showSection('search-section')" title="किताब खोजें">
+                <span class="nav-icon">🔍</span> खोजें
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="dark-toggle" onclick="toggleDarkMode()" title="डार्क मोड टॉगल करें">
+                <span>🌙</span> डार्क मोड
+                <div class="toggle-switch"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content" id="mainContent">
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" title="मेनू">☰</button>
+
+        <!-- Top Header -->
+        <div class="top-header">
+            <h1 class="page-title" id="pageTitle">📊 डैशबोर्ड</h1>
+            <div class="header-actions">
+                <button class="btn btn-accent" onclick="showSection('add-book')" title="नई किताब जोड़ें">
+                    ➕ नई किताब
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input
+            type="text"
+            class="search-input"
+            id="globalSearch"
+            placeholder="🔍 किताब का नाम, लेखक या ISBN खोजें... (लाइव सर्च)"
+            oninput="liveSearch()"
+            >
+            <span class="search-icon">🔎</span>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">
+                <div class="stat-icon books">📚</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">कुल किताबें</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon available">✅</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="statAvailable">0</div>
+                    <div class="stat-label">उपलब्ध</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon issued">📤</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="statIssued">0</div>
+                    <div class="stat-label">जारी (Issued)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon categories">🏷️</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="statCategories">0</div>
+                    <div class="stat-label">श्रेणियाँ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Book Section -->
+        <div class="section" id="addBookSection" style="display:none;">
+            <div class="section-header">
+                <h2 class="section-title">➕ नई किताब दर्ज करें</h2>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📖 किताब का नाम *</label>
+                    <input type="text" id="bookTitle" placeholder="जैसे: गोदान">
+                </div>
+                <div class="form-group">
+                    <label>✍️ लेखक *</label>
+                    <input type="text" id="bookAuthor" placeholder="जैसे: मुंशी प्रेमचंद">
+                </div>
+                <div class="form-group">
+                    <label>🔢 ISBN नंबर</label>
+                    <input type="text" id="bookISBN" placeholder="जैसे: 978-81-267-XXXX">
+                </div>
+                <div class="form-group">
+                    <label>📂 श्रेणी (Category)</label>
+                    <select id="bookCategory">
+                        <option value="Fiction">Fiction (काल्पनिक)</option>
+                        <option value="Science">Science (विज्ञान)</option>
+                        <option value="History">History (इतिहास)</option>
+                        <option value="Biography">Biography (जीवनी)</option>
+                        <option value="Technology">Technology (तकनीकी)</option>
+                        <option value="Philosophy">Philosophy (दर्शन)</option>
+                        <option value="Poetry">Poetry (कविता)</option>
+                        <option value="Other">Other (अन्य)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-accent" onclick="addBook()" title="डेटाबेस में जोड़ें">
+                💾 डेटाबेस में जोड़ें
+            </button>
+        </div>
+
+        <!-- Inventory / All Books Section -->
+        <div class="section" id="inventorySection">
+            <div class="section-header">
+                <h2 class="section-title">📋 किताबों की सूची (Inventory)</h2>
+                <span class="section-badge badge-available" id="inventoryCount">0 किताबें</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>📖 किताब का नाम</th>
+                            <th>✍️ लेखक</th>
+                            <th>🔢 ISBN</th>
+                            <th>📂 श्रेणी</th>
+                            <th>📌 स्थिति</th>
+                            <th>⚡ कार्य</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookTableBody">
+                        <tr class="empty-state">
+                            <td colspan="7">
+                                <div class="empty-icon">📭</div>
+                                <p>कोई किताब नहीं मिली। कृपया नई किताब जोड़ें।</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <div class="section" id="searchResultsSection" style="display:none;">
+            <div class="section-header">
+                <h2 class="section-title">🔍 खोज परिणाम</h2>
+                <span class="section-badge badge-available" id="searchResultCount">0 परिणाम</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>📖 किताब का नाम</th>
+                            <th>✍️ लेखक</th>
+                            <th>🔢 ISBN</th>
+                            <th>📂 श्रेणी</th>
+                            <th>📌 स्थिति</th>
+                            <th>⚡ कार्य</th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchTableBody">
+                        <tr class="empty-state">
+                            <td colspan="7">
+                                <div class="empty-icon">🔎</div>
+                                <p>खोजने के लिए ऊपर सर्च बार में टाइप करें।</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal" style="display:none;">
+        <div class="modal">
+            <h3>⚠️ क्या आप सुनिश्चित हैं?</h3>
+            <p>यह किताब <strong id="deleteBookTitle"></strong> स्थायी रूप से डेटाबेस से हटा दी जाएगी। यह क्रिया वापस नहीं ली जा सकती।</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeDeleteModal()">❌ रद्द करें</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">🗑️ हाँ, हटाएँ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // ==================== DATA LAYER ====================
+        const STORAGE_KEY = 'bms_r3_books';
+        const DARK_MODE_KEY = 'bms_r3_darkmode';
+        let books = [];
+        let deleteTargetId = null;
+
+        // Sample books for initial load
+        const sampleBooks = [
+            { id: 101, title: 'गोदान', author: 'मुंशी प्रेमचंद', isbn: '978-81-267-0501-6', category: 'Fiction',
+                status: 'Available' },
+            { id: 102, title: 'महाभारत', author: 'वेदव्यास', isbn: '978-81-291-1234-5', category: 'History',
+            status: 'Available' },
+            { id: 103, title: 'A Brief History of Time', author: 'Stephen Hawking', isbn: '978-0-553-38016-3',
+                category: 'Science', status: 'Issued' },
+            { id: 104, title: 'रश्मिरथी', author: 'रामधारी सिंह दिनकर', isbn: '978-81-267-1234-7', category: 'Poetry',
+                status: 'Available' },
+            { id: 105, title: 'The Story of My Experiments with Truth', author: 'Mahatma Gandhi',
+                isbn: '978-0-14-303104-8', category: 'Biography', status: 'Available' },
+            { id: 106, title: 'किताबों की दुनिया', author: 'अज्ञेय', isbn: '978-81-263-4567-8', category: 'Philosophy',
+                status: 'Issued' },
+        ];
+
+        function loadBooks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    books = JSON.parse(stored);
+                    if (!Array.isArray(books) || books.length === 0) {
+                        books = [...sampleBooks];
+                        saveBooks();
+                    }
+                } catch (e) {
+                    books = [...sampleBooks];
+                    saveBooks();
+                }
+            } else {
+                books = [...sampleBooks];
+                saveBooks();
+            }
+        }
+
+        function saveBooks() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+        }
+
+        function generateId() {
+            let id;
+            do {
+                id = Math.floor(100 + Math.random() * 900); // 3-digit ID
+            } while (books.some(b => b.id === id));
+            return id;
+        }
+
+        // ==================== UI RENDERING ====================
+        function renderAll() {
+            renderBookTable();
+            renderStats();
+            updateInventoryCount();
+            if (document.getElementById('searchResultsSection').style.display !== 'none') {
+                liveSearch();
+            }
+        }
+
+        function renderBookTable(data = null) {
+            const tbody = document.getElementById('bookTableBody');
+            const source = data || books;
+            if (source.length === 0) {
+                tbody.innerHTML = `
+                    <tr class="empty-state">
+                        <td colspan="7">
+                            <div class="empty-icon">📭</div>
+                            <p>कोई किताब नहीं मिली। कृपया नई किताब जोड़ें।</p>
+                        </td>
+                    </tr>`;
+            } else {
+                tbody.innerHTML = source.map(book => `
+                    <tr>
+                        <td><strong>#${book.id}</strong></td>
+                        <td>${escapeHTML(book.title)}</td>
+                        <td>${escapeHTML(book.author)}</td>
+                        <td><code>${escapeHTML(book.isbn || '—')}</code></td>
+                        <td><span style="font-weight:500;">${escapeHTML(book.category)}</span></td>
+                        <td>
+                            <span class="status-dot ${book.status === 'Available' ? 'available' : 'issued'}">
+                                ${book.status === 'Available' ? 'उपलब्ध' : 'जारी'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="toggleStatus(${book.id})" title="स्थिति बदलें" style="margin-right:4px;">
+                                🔄
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal(${book.id})" title="हटाएँ">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function renderStats() {
+            const total = books.length;
+            const available = books.filter(b => b.status === 'Available').length;
+            const issued = books.filter(b => b.status === 'Issued').length;
+            const categories = new Set(books.map(b => b.category)).size;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statAvailable').textContent = available;
+            document.getElementById('statIssued').textContent = issued;
+            document.getElementById('statCategories').textContent = categories;
+        }
+
+        function updateInventoryCount() {
+            document.getElementById('inventoryCount').textContent = `${books.length} किताबें`;
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ==================== ACTIONS ====================
+        function addBook() {
+            const title = document.getElementById('bookTitle').value.trim();
+            const author = document.getElementById('bookAuthor').value.trim();
+            const isbn = document.getElementById('bookISBN').value.trim();
+            const category = document.getElementById('bookCategory').value;
+
+            if (!title || !author) {
+                showToast('⚠️ कृपया किताब का नाम और लेखक अवश्य भरें।', 'error');
+                return;
+            }
+
+            const newBook = {
+                id: generateId(),
+                title: title,
+                author: author,
+                isbn: isbn || '—',
+                category: category,
+                status: 'Available'
+            };
+
+            books.unshift(newBook);
+            saveBooks();
+            renderAll();
+            clearForm();
+            showToast('✅ "' + title + '" सफलतापूर्वक जोड़ी गई!', 'success');
+            showSection('inventory');
+        }
+
+        function clearForm() {
+            document.getElementById('bookTitle').value = '';
+            document.getElementById('bookAuthor').value = '';
+            document.getElementById('bookISBN').value = '';
+            document.getElementById('bookCategory').value = 'Fiction';
+        }
+
+        function toggleStatus(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+            book.status = book.status === 'Available' ? 'Issued' : 'Available';
+            saveBooks();
+            renderAll();
+            showToast(
+                `🔄 "${book.title}" की स्थिति बदलकर "${book.status === 'Available' ? 'उपलब्ध' : 'जारी'}" कर दी गई।`,
+                'info');
+        }
+
+        function openDeleteModal(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+            deleteTargetId = id;
+            document.getElementById('deleteBookTitle').textContent = '"' + book.title + '" (ID: #' + book.id + ')';
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            deleteTargetId = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        function confirmDelete() {
+            if (deleteTargetId === null) return;
+            const book = books.find(b => b.id === deleteTargetId);
+            const bookTitle = book ? book.title : 'अज्ञात';
+            books = books.filter(b => b.id !== deleteTargetId);
+            saveBooks();
+            renderAll();
+            closeDeleteModal();
+            showToast('🗑️ "' + bookTitle + '" हटा दी गई है।', 'info');
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+
+        // Close modal on overlay click
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        // ==================== SEARCH ====================
+        function liveSearch() {
+            const query = document.getElementById('globalSearch').value.trim().toLowerCase();
+            const searchSection = document.getElementById('searchResultsSection');
+            const inventorySection = document.getElementById('inventorySection');
+            const searchTbody = document.getElementById('searchTableBody');
+            const searchCount = document.getElementById('searchResultCount');
+
+            if (query === '') {
+                // Show inventory, hide search results
+                searchSection.style.display = 'none';
+                inventorySection.style.display = '';
+                document.getElementById('pageTitle').textContent = '📊 डैशबोर्ड';
+                renderBookTable();
+                return;
+            }
+
+            // Show search results, hide inventory
+            searchSection.style.display = '';
+            inventorySection.style.display = 'none';
+            document.getElementById('pageTitle').textContent = '🔍 खोज परिणाम';
+
+            const results = books.filter(book =>
+                book.title.toLowerCase().includes(query) ||
+                book.author.toLowerCase().includes(query) ||
+                (book.isbn && book.isbn.toLowerCase().includes(query)) ||
+                book.category.toLowerCase().includes(query) ||
+                String(book.id).includes(query)
+            );
+
+            searchCount.textContent = `${results.length} परिणाम`;
+
+            if (results.length === 0) {
+                searchTbody.innerHTML = `
+                    <tr class="empty-state">
+                        <td colspan="7">
+                            <div class="empty-icon">😔</div>
+                            <p>"${escapeHTML(query)}" के लिए कोई किताब नहीं मिली।</p>
+                        </td>
+                    </tr>`;
+            } else {
+                searchTbody.innerHTML = results.map(book => `
+                    <tr>
+                        <td><strong>#${book.id}</strong></td>
+                        <td>${escapeHTML(book.title)}</td>
+                        <td>${escapeHTML(book.author)}</td>
+                        <td><code>${escapeHTML(book.isbn || '—')}</code></td>
+                        <td><span style="font-weight:500;">${escapeHTML(book.category)}</span></td>
+                        <td>
+                            <span class="status-dot ${book.status === 'Available' ? 'available' : 'issued'}">
+                                ${book.status === 'Available' ? 'उपलब्ध' : 'जारी'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-xs btn-outline" onclick="toggleStatus(${book.id})" title="स्थिति बदलें">🔄</button>
+                            <button class="btn btn-xs btn-danger" onclick="openDeleteModal(${book.id})" title="हटाएँ">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // ==================== SECTION NAVIGATION ====================
+        function showSection(section) {
+            const addSection = document.getElementById('addBookSection');
+            const inventorySection = document.getElementById('inventorySection');
+            const searchSection = document.getElementById('searchResultsSection');
+            const searchInput = document.getElementById('globalSearch');
+            const pageTitle = document.getElementById('pageTitle');
+
+            // Hide all
+            addSection.style.display = 'none';
+            inventorySection.style.display = 'none';
+            searchSection.style.display = 'none';
+
+            // Clear search
+            searchInput.value = '';
+
+            // Update sidebar active
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+
+            switch (section) {
+                case 'add-book':
+                    addSection.style.display = '';
+                    pageTitle.textContent = '➕ नई किताब जोड़ें';
+                    document.querySelector('.sidebar-nav a:nth-child(2)').classList.add('active');
+                    break;
+                case 'inventory':
+                    inventorySection.style.display = '';
+                    pageTitle.textContent = '📊 डैशबोर्ड';
+                    document.querySelector('.sidebar-nav a:nth-child(3)').classList.add('active');
+                    renderBookTable();
+                    break;
+                case 'search-section':
+                    searchSection.style.display = '';
+                    pageTitle.textContent = '🔍 किताब खोजें';
+                    document.querySelector('.sidebar-nav a:nth-child(4)').classList.add('active');
+                    document.getElementById('searchTableBody').innerHTML = `
+                        <tr class="empty-state">
+                            <td colspan="7">
+                                <div class="empty-icon">🔎</div>
+                                <p>खोजने के लिए ऊपर सर्च बार में टाइप करें।</p>
+                            </td>
+                        </tr>`;
+                    document.getElementById('searchResultCount').textContent = '0 परिणाम';
+                    break;
+                default: // dashboard
+                    inventorySection.style.display = '';
+                    pageTitle.textContent = '📊 डैशबोर्ड';
+                    document.querySelector('.sidebar-nav a:nth-child(1)').classList.add('active');
+                    renderBookTable();
+            }
+            renderStats();
+            updateInventoryCount();
+        }
+
+        // ==================== DARK MODE ====================
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem(DARK_MODE_KEY, isDark ? '1' : '0');
+        }
+
+        function loadDarkMode() {
+            const saved = localStorage.getItem(DARK_MODE_KEY);
+            if (saved === '1') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // ==================== MOBILE SIDEBAR ====================
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        // Close sidebar when clicking main content on mobile
+        document.getElementById('mainContent').addEventListener('click', function(e) {
+            if (window.innerWidth <= 640 && document.getElementById('sidebar').classList.contains('mobile-open')) {
+                if (!e.target.closest('.mobile-menu-btn')) {
+                    document.getElementById('sidebar').classList.remove('mobile-open');
+                }
+            }
+        });
+
+        // ==================== TOAST ====================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 3000);
+        }
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+K or / to focus search
+            if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement ===
+                    document.body)) {
+                e.preventDefault();
+                document.getElementById('globalSearch').focus();
+            }
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                closeDeleteModal();
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
+        });
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            loadDarkMode();
+            loadBooks();
+            renderAll();
+            showSection('dashboard');
+            console.log('📚 R3 Book Management System Ready!');
+            console.log('   ज्ञान का प्रबंधन, सरलता के साथ।');
+            console.log('   कुल किताबें:', books.length);
+            console.log('   💡 टिप: सर्च बार में जाने के लिए "/" दबाएँ।');
+        }
+
+        init();
+    </script>
+</body>
+</html>
